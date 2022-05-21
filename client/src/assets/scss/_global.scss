@@ -1,0 +1,17 @@
+$primary: #292a2b;
+$secondary: hsl(0, 0%, 15%);
+$white: #ffffff;
+$black: #000000;
+
+body {
+  background: $black;
+  color: $white;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  * {
+    margin: 0;
+    padding: 0;
+  }
+}
