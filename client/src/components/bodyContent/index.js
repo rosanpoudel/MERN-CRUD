@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import EditIcon from "../../assets/img/edit-icon.png";
-import DeleteIcon from "../../assets/img/delete-icon.png";
 import SitePaths from "../../helpers/path";
+import { MdModeEditOutline, MdDelete } from "react-icons/md";
 
-const BodyContent = ({ posts, fetchPosts }) => {
+const BodyContent = ({ posts, fetchPosts, isLoading, setIsLoading }) => {
   const [title, setTitle] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [editId, setEditId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -17,7 +15,6 @@ const BodyContent = ({ posts, fetchPosts }) => {
     };
 
     setIsLoading(true);
-
     axios
       .post(`${SitePaths.BASE_PATH}/posts/add`, data)
       .then(function (response) {
@@ -68,6 +65,7 @@ const BodyContent = ({ posts, fetchPosts }) => {
 
   // delete post
   const deletePost = (postId) => {
+    setIsLoading(true);
     axios
       .delete(`${SitePaths.BASE_PATH}/posts/${postId}`)
       .then(function (response) {
@@ -85,85 +83,91 @@ const BodyContent = ({ posts, fetchPosts }) => {
 
   return (
     <div className="body-content">
-      {/* form */}
-      <div className="form-wrap">
-        <div className="form">
-          <div className="form-row">
-            <label className="label">What needs to be done?</label>
-            <input
-              type="text"
-              className="input-field"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-
-          <div className="form-row">
-            <button
-              className="submit"
-              disabled={title.length === 0 ? true : false}
-              aria-disabled
-              onClick={() => {
-                isEditing ? updatePost(editId) : addPost();
-              }}
-            >
-              {isLoading ? "Loading..." : isEditing ? "Update" : "Add"}
-            </button>
-            {isEditing && !isLoading && (
+      <div className="main-content">
+        {/* form */}
+        <div className="form-wrap">
+          <form className="form" action="javascript:void(0)">
+            <div className="form-input">
+              <input
+                type="text"
+                className="input-field"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="What neesd to be done ?"
+              />
+            </div>
+            <div className="action-buttons">
               <button
-                className="submit"
+                className="submit-button"
+                disabled={title.length === 0 ? true : false}
                 aria-disabled
                 onClick={() => {
-                  setIsEditing(false);
-                  setTitle("");
+                  isEditing ? updatePost(editId) : addPost();
                 }}
               >
-                Cancel
+                {isEditing ? "Update Task" : "Add Task"}
               </button>
-            )}
-          </div>
-        </div>
-      </div>
 
-      {/* posts */}
-      <div className="posts">
-        {posts.length > 0 ? (
-          <div className="posts-inner">
-            {posts?.map((post) => {
-              return (
-                <div
-                  className={`post-card ${post?.completed ? "completed" : ""}`}
+              {isEditing && (
+                <button
+                  className="submit-button"
+                  aria-disabled
+                  onClick={() => {
+                    setIsEditing(false);
+                    setTitle("");
+                  }}
                 >
-                  <div className="post-data">
-                    <input
-                      type="checkbox"
-                      className="status-checkbox"
-                      checked={post?.completed}
-                      onChange={(e) => markAsCompleted(post, e)}
-                    />
-                    <h3 className="post-title">{post?.title}</h3>
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* posts */}
+        <div className="posts">
+          {posts.length > 0 ? (
+            <div className="posts-inner">
+              {posts?.map((post) => {
+                return (
+                  <div
+                    className={`post-card ${
+                      post?.completed ? "completed" : ""
+                    }`}
+                  >
+                    <div className="post-data">
+                      <input
+                        type="checkbox"
+                        className="status-checkbox"
+                        checked={post?.completed}
+                        onChange={(e) => markAsCompleted(post, e)}
+                      />
+                      <h3 className="post-title">{post?.title}</h3>
+                    </div>
+                    <div className="actions">
+                      <p
+                        className="action-icon"
+                        onClick={() => handleEditClick(post?._id)}
+                      >
+                        <MdModeEditOutline />
+                      </p>
+                      <p
+                        className="action-icon"
+                        onClick={() => deletePost(post?._id)}
+                      >
+                        <MdDelete />
+                      </p>
+                    </div>
                   </div>
-                  <div className="actions">
-                    <p
-                      className="action-icon"
-                      onClick={() => handleEditClick(post?._id)}
-                    >
-                      Edit
-                    </p>
-                    <p
-                      className="action-icon"
-                      onClick={() => deletePost(post?._id)}
-                    >
-                      Delete
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="empty">No Tasks!</div>
-        )}
+                );
+              })}
+            </div>
+          ) : (
+            <div className="empty">
+              {!isLoading && posts.length < 0 ? "No Tasks!" : null}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

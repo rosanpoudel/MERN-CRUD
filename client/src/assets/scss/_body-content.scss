@@ -1,92 +1,63 @@
 .body-content {
   display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  padding: 50px;
+  justify-content: center;
+  padding: 50px 10px 20px 10px;
+  .main-content {
+    width: 100%;
+    max-width: 700px;
 
-  //   form
-  .form-wrap {
-    width: calc(35% - 10px);
-    margin-bottom: 50px;
-    .form {
-      background: $black;
-      margin-right: 50px;
-
-      .form-row {
-        margin-bottom: 20px;
-        &:last-child {
-          margin-bottom: 0;
-        }
-        .label {
-          display: block;
-          font-size: 16px;
-          margin-bottom: 8px;
-        }
-        .input-field {
-          background: $secondary;
-          display: block;
-          padding: 11px 15px;
-          border: none;
-          border-radius: 5px;
-          width: 100%;
-          box-sizing: border-box;
-          color: #d7d7d7;
-        }
-      }
-      .submit {
-        background: transparent;
-        color: #ffffff;
-        border-radius: 15px;
-        font-size: 16px;
-        display: inline-flex;
-        cursor: pointer;
-        margin-right: 15px;
-      }
+    //   posts
+    .empty {
+      width: 100%;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-  }
-
-  //   posts
-  .empty {
-    margin-top: 100px;
-    font-size: 22px;
-    font-weight: 500;
-  }
-  .posts {
-    width: calc(65% - 20px);
-
-    .posts-inner {
-      .post-card {
-        display: flex;
-        justify-content: space-between;
-        background-color: #d7d7d7;
-        padding: 10px;
-        margin-bottom: 5px;
-        &.completed {
-          opacity: 0.7;
-          .post-title {
-            text-decoration: line-through;
-          }
-        }
-        .post-data {
+    .posts {
+      .posts-inner {
+        .post-card {
           display: flex;
-          align-items: center;
-          .status-checkbox {
-            width: 15px;
-            height: 15px;
+          justify-content: space-between;
+          background-color: #d7d7d7;
+          padding: 10px 20px 10px 15px;
+          &.completed {
+            opacity: 0.7;
+            .post-title {
+              text-decoration: line-through;
+            }
           }
-          .post-title {
-            font-size: 14px;
-            text-transform: capitalize;
-            color: $black;
-            margin-left: 10px;
+          .post-data {
+            display: flex;
+            align-items: center;
+            .status-checkbox {
+              width: 15px;
+              height: 15px;
+            }
+            .post-title {
+              font-size: 14px;
+              text-transform: capitalize;
+              color: $black;
+              margin-left: 10px;
+            }
           }
-        }
-        .actions {
-          display: flex;
-          .action-icon {
-            color: #353535;
-            margin-left: 20px;
-            cursor: pointer;
+          .actions {
+            display: flex;
+            .action-icon {
+              color: #000000;
+              margin-left: 20px;
+              transition: 0.5s;
+
+              cursor: pointer;
+              svg {
+                width: 20px;
+                height: 20px;
+              }
+              &:hover {
+                opacity: 0.5;
+                transition: 0.5s;
+              }
+            }
           }
         }
       }
