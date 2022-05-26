@@ -1,3 +1,9 @@
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 body {
   background: #000000;
   color: #ffffff;
@@ -11,69 +17,29 @@ body * {
   padding: 0;
 }
 
-.header {
-  border-bottom: 1px solid #d7d7d7;
-  padding: 25px;
+.c-button {
+  background: #1276ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 120px;
+  height: 46px;
+  padding: 0 15px;
+  color: #ffffff;
+  border-radius: 5px;
+  font-size: 16px;
+  display: inline-flex;
+  cursor: pointer;
+  opacity: 0.9;
+  box-sizing: content-box;
+}
+.c-button:hover {
+  opacity: 1;
 }
 
-.body-content {
-  display: flex;
-  justify-content: center;
-  padding: 50px 10px 20px 10px;
-}
-.body-content .main-content {
-  width: 100%;
-  max-width: 700px;
-}
-.body-content .main-content .empty {
-  width: 100%;
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.body-content .main-content .posts .posts-inner .post-card {
-  display: flex;
-  justify-content: space-between;
-  background-color: #d7d7d7;
-  padding: 10px 20px 10px 15px;
-}
-.body-content .main-content .posts .posts-inner .post-card.completed {
-  opacity: 0.7;
-}
-.body-content .main-content .posts .posts-inner .post-card.completed .post-title {
-  text-decoration: line-through;
-}
-.body-content .main-content .posts .posts-inner .post-card .post-data {
-  display: flex;
-  align-items: center;
-}
-.body-content .main-content .posts .posts-inner .post-card .post-data .status-checkbox {
-  width: 15px;
-  height: 15px;
-}
-.body-content .main-content .posts .posts-inner .post-card .post-data .post-title {
-  font-size: 14px;
-  text-transform: capitalize;
-  color: #000000;
-  margin-left: 10px;
-}
-.body-content .main-content .posts .posts-inner .post-card .actions {
-  display: flex;
-}
-.body-content .main-content .posts .posts-inner .post-card .actions .action-icon {
-  color: #000000;
-  margin-left: 20px;
-  transition: 0.5s;
-  cursor: pointer;
-}
-.body-content .main-content .posts .posts-inner .post-card .actions .action-icon svg {
-  width: 20px;
-  height: 20px;
-}
-.body-content .main-content .posts .posts-inner .post-card .actions .action-icon:hover {
-  opacity: 0.5;
-  transition: 0.5s;
+.link-button {
+  color: #1276ff;
+  text-decoration: none;
 }
 
 .form-wrap .form {
@@ -97,28 +63,50 @@ body * {
   font-style: italic;
 }
 .form-wrap .form .action-buttons {
-  padding: 20px 0;
+  padding: 20px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.form-wrap .form .action-buttons .filters {
   display: flex;
   align-items: center;
 }
-.form-wrap .form .action-buttons .submit-button {
-  background: #1276ff;
+.form-wrap .form .action-buttons .filters .parameters {
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-width: 120px;
-  height: 46px;
-  padding: 0 15px;
-  color: #ffffff;
+  margin-right: 20px;
+}
+.form-wrap .form .action-buttons .filters .parameters p {
+  padding: 2px 10px;
   border-radius: 5px;
-  font-size: 16px;
-  display: inline-flex;
+  font-size: 14px;
+  color: #d7d7d7;
+  text-transform: lowercase;
   cursor: pointer;
-  margin-right: 15px;
-  opacity: 0.9;
 }
-.form-wrap .form .action-buttons .submit-button:hover {
-  opacity: 1;
+.form-wrap .form .action-buttons .filters .parameters p.active {
+  border: 1px solid #d7d7d7;
+}
+.form-wrap .form .action-buttons .filters .count {
+  font-size: 14px;
+}
+.form-wrap .form .action-buttons .filters .count svg {
+  width: 25px;
+  height: 25px;
+}
+.form-wrap .form .action-buttons .filters .count span {
+  color: #d7d7d7;
+}
+
+.c-form {
+  width: 100%;
+  max-width: 350px;
+}
+.c-form .c-button {
+  width: 100%;
+  color: #d7d7d7;
+  margin-bottom: 5px;
 }
 
 .spinner-wrap {
@@ -132,17 +120,19 @@ body * {
   align-items: center;
   background: rgba(0, 0, 0, 0.6);
 }
-.spinner-wrap .spinner {
+
+.spinner {
   animation: rotate 2s linear infinite;
   z-index: 9;
   width: 30px;
   height: 30px;
 }
-.spinner-wrap .spinner .path {
+.spinner .path {
   stroke: #ffffff;
   stroke-linecap: round;
   animation: dash 1.5s ease-in-out infinite;
 }
+
 @keyframes rotate {
   100% {
     transform: rotate(360deg);
@@ -161,6 +151,102 @@ body * {
     stroke-dasharray: 90, 150;
     stroke-dashoffset: -124;
   }
+}
+.posts .posts-inner .post-card {
+  display: flex;
+  justify-content: space-between;
+  background-color: #d7d7d7;
+  padding: 10px 20px 10px 15px;
+}
+.posts .posts-inner .post-card.completed {
+  opacity: 0.7;
+}
+.posts .posts-inner .post-card.completed .post-title {
+  text-decoration: line-through;
+}
+.posts .posts-inner .post-card .post-data {
+  display: flex;
+  align-items: center;
+}
+.posts .posts-inner .post-card .post-data .status-checkbox {
+  width: 15px;
+  height: 15px;
+}
+.posts .posts-inner .post-card .post-data .post-title {
+  font-size: 14px;
+  text-transform: capitalize;
+  color: #000000;
+  margin-left: 10px;
+}
+.posts .posts-inner .post-card .actions {
+  display: flex;
+}
+.posts .posts-inner .post-card .actions .action-icon {
+  color: #000000;
+  margin-left: 20px;
+  transition: 0.5s;
+  cursor: pointer;
+}
+.posts .posts-inner .post-card .actions .action-icon svg {
+  width: 20px;
+  height: 20px;
+}
+.posts .posts-inner .post-card .actions .action-icon:hover {
+  opacity: 0.5;
+  transition: 0.5s;
+}
+
+.empty-state {
+  width: 100%;
+  height: 200px;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-row {
+  margin-bottom: 24px;
+}
+.form-row .label {
+  display: block;
+  font-size: 14px;
+  color: #d7d7d7;
+  margin-bottom: 8px;
+}
+.form-row .input {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #d7d7d7;
+  color: #000000;
+  font-weight: 500;
+}
+
+.header {
+  border-bottom: 1px solid #333333;
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.posts-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 50px 10px 20px 10px;
+}
+.posts-wrapper .main-content {
+  width: 100%;
+  max-width: 700px;
+}
+
+.login-signup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 20px;
 }
 
 /*# sourceMappingURL=main.css.map */

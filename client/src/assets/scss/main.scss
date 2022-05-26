@@ -1,6 +1,6 @@
-@import "./global";
-@import "./header";
-@import "./body-content";
-@import "./footer";
-@import "./form";
-@import "./spinner";
+@import './vendors/all-vendors';
+@import './helpers/all-helpers';
+@import './base/all-base';
+@import './components/all-components';
+@import './layouts/all-layouts';
+@import './pages/all-pages';
