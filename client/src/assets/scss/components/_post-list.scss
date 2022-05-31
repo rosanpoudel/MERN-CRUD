@@ -1,10 +1,17 @@
 .posts {
+  max-height: calc(100vh - 315px);
+  overflow-x: hidden;
+  overflow-y: auto;
   .posts-inner {
     .post-card {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       background-color: #d7d7d7;
-      padding: 10px 20px 10px 15px;
+      padding: 10px;
+      @include mq("tablet") {
+        padding: 10px 20px 10px 15px;
+      }
       &.completed {
         opacity: 0.7;
         .post-title {
@@ -13,24 +20,34 @@
       }
       .post-data {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         .status-checkbox {
           width: 15px;
           height: 15px;
+          margin-top: 1px;
         }
         .post-title {
-          font-size: 14px;
+          max-width: 90%;
+          font-size: 13px;
           text-transform: capitalize;
           color: $black;
           margin-left: 10px;
+          @include mq("tablet") {
+            font-size: 14px;
+            max-width: 95%;
+          }
         }
       }
       .actions {
         display: flex;
+
         .action-icon {
           color: #000000;
-          margin-left: 20px;
+          margin-left: 10px;
           transition: 0.5s;
+          @include mq("tablet") {
+            margin-left: 20px;
+          }
 
           cursor: pointer;
           svg {

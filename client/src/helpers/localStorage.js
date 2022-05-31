@@ -1,12 +1,22 @@
-export const setCookie = (data) => {
-  return localStorage.setItem("user", JSON.stringify(data));
-};
+class LocalDB {
+  constructor() {
+    this.sessionKey = "user";
+  }
+  setSession = (data) => {
+    return localStorage.setItem(this.sessionKey, JSON.stringify(data));
+  };
 
-export const getCookie = () => {
-  const data = localStorage.getItem("user");
-  return JSON.parse(data)?.token;
-};
+  deleteSession = () => {
+    return localStorage.removeItem(this.sessionKey);
+  };
 
-export const deleteCookie = () => {
-  return localStorage.removeItem("user");
-};
+  getToken = () => {
+    const itemGot = localStorage.getItem(this.sessionKey);
+    if (itemGot !== null) {
+      return JSON.parse(itemGot)?.token;
+    }
+    return null;
+  };
+}
+
+export default new LocalDB();

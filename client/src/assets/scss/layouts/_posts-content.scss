@@ -1,7 +1,10 @@
 .posts-wrapper {
   display: flex;
   justify-content: center;
-  padding: 50px 10px 20px 10px;
+  padding: 20px 10px 20px 10px;
+  @include mq("tablet") {
+    padding: 50px 10px 20px 10px;
+  }
   .main-content {
     width: 100%;
     max-width: 700px;

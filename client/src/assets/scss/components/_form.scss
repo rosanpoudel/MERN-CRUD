@@ -1,9 +1,23 @@
 .c-form {
   width: 100%;
   max-width: 350px;
+  margin: 0 15px;
+  background: #ffffff;
+  padding: 40px 25px;
+  border-radius: 10px;
+  @include mq("tablet") {
+    padding: 40px;
+  }
   .c-button {
     width: 100%;
-    color: #d7d7d7;
-    margin-bottom: 5px;
+  }
+
+  .other-option {
+    margin-top: 20px;
+    color: #523535;
+    .link-button {
+      color: #1276ff;
+      text-decoration: underline;
+    }
   }
 }

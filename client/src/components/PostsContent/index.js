@@ -1,69 +1,41 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import SitePaths from "../../helpers/path";
 import { MdModeEditOutline, MdDelete, MdPendingActions } from "react-icons/md";
 import Button from "../Button";
-import { getCookie } from "../../helpers/localStorage";
-import headers from "../../helpers/requestHeaders";
 
-const PostsContent = ({ isLoading, setIsLoading }) => {
-  const [posts, setPosts] = useState([]);
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchPostLoading,
+  fetchPosts,
+  addPost,
+  updatePost,
+  deletePost,
+  markCompleted,
+} from "../../redux/actions/postActions";
+
+const PostsContent = ({ isLoggedIn }) => {
+  const dispatch = useDispatch();
+  const { posts, isFetchingPosts, buttonLoading } = useSelector(
+    (state) => state.allPosts
+  );
+
   const [title, setTitle] = useState("");
   const [editId, setEditId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
   const [tempPosts, setTempPosts] = useState([]);
-
-  const author = JSON.parse(localStorage.getItem("user")).result?.name;
-  const authorId = JSON.parse(localStorage.getItem("user")).result?._id;
-
-  // fetch posts
-  const fetchPosts = async () => {
-    setIsLoading(true);
-    axios
-      .get(`${SitePaths.BASE_PATH}/posts`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user"))?.token
-          }`,
-        },
-      })
-      .then((resp) => {
-        setPosts(resp.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        console.error("error:", err);
-      });
-  };
+  const author = JSON.parse(localStorage.getItem("user"))?.result?.name;
+  const authorId = JSON.parse(localStorage.getItem("user"))?.result?._id;
 
   // add post
-  const addPost = async () => {
+  const addPostClick = async () => {
     const data = {
       title: title,
       author: author,
       authorId: authorId,
     };
-    setIsLoading(true);
-    axios
-      .post(`${SitePaths.BASE_PATH}/posts/add`, data, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user"))?.token
-          }`,
-        },
-      })
-      .then(function (response) {
-        fetchPosts();
-        clearFromData();
-        setIsLoading(false);
-      })
-      .catch(function (error) {
-        console.log("error:", error);
-      });
+
+    dispatch(addPost(data));
+    clearFromData();
   };
 
   // update post
@@ -73,69 +45,28 @@ const PostsContent = ({ isLoading, setIsLoading }) => {
     const editData = posts?.find((post) => post._id === id)?.title;
     setTitle(editData);
   };
-  const updatePost = async (postId) => {
-    setIsLoading(true);
+
+  const updatePostClick = async (postId) => {
     const post = posts?.find((post) => post?._id === postId);
     const data = { ...post, title: title };
-    axios
-      .patch(`${SitePaths.BASE_PATH}/posts/${postId}`, data, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user"))?.token
-          }`,
-        },
-      })
-      .then(function (response) {
-        fetchPosts();
-        clearFromData();
-        setIsLoading(false);
-        setTitle("");
-        setIsEditing(false);
-        setEditId(null);
-      })
-      .catch(function (error) {
-        console.log("error:", error);
-      });
+
+    dispatch(updatePost(data));
+
+    clearFromData();
+    setIsEditing(false);
+    setEditId(null);
   };
+
+  // mark as completed
   const markAsCompleted = async (post, e) => {
-    setIsLoading(true);
+    dispatch(fetchPostLoading(true));
     const data = { ...post, completed: e.target.checked };
-    axios
-      .patch(`${SitePaths.BASE_PATH}/posts/${post?._id}`, data, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user"))?.token
-          }`,
-        },
-      })
-      .then(function (response) {
-        fetchPosts();
-      })
-      .catch(function (error) {
-        console.log("error:", error);
-      });
+    dispatch(markCompleted(data));
   };
 
   // delete post
-  const deletePost = async (postId) => {
-    setIsLoading(true);
-    axios
-      .delete(`${SitePaths.BASE_PATH}/posts/${postId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user"))?.token
-          }`,
-        },
-      })
-      .then(function (response) {
-        fetchPosts();
-      })
-      .catch(function (error) {
-        console.log("error:", error);
-      });
+  const deletePostClick = async (postId) => {
+    dispatch(deletePost(postId));
   };
 
   // handle filter
@@ -161,7 +92,7 @@ const PostsContent = ({ isLoading, setIsLoading }) => {
   }, [posts || activeFilter]);
 
   useEffect(() => {
-    fetchPosts();
+    dispatch(fetchPosts());
   }, []);
 
   return (
@@ -176,7 +107,7 @@ const PostsContent = ({ isLoading, setIsLoading }) => {
                 className="input-field"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="What neesd to be done ?"
+                placeholder="What needs to be done ?"
               />
             </div>
             <div className="action-buttons">
@@ -186,8 +117,9 @@ const PostsContent = ({ isLoading, setIsLoading }) => {
                   disabled={title.length === 0 ? true : false}
                   label={isEditing ? "Update Task" : "Add Task"}
                   onClick={() => {
-                    isEditing ? updatePost(editId) : addPost();
+                    isEditing ? updatePostClick(editId) : addPostClick();
                   }}
+                  loading={buttonLoading}
                 />
 
                 {isEditing && (
@@ -261,7 +193,7 @@ const PostsContent = ({ isLoading, setIsLoading }) => {
                       </p>
                       <p
                         className="action-icon"
-                        onClick={() => deletePost(post?._id)}
+                        onClick={() => deletePostClick(post?._id)}
                       >
                         <MdDelete />
                       </p>
@@ -272,7 +204,9 @@ const PostsContent = ({ isLoading, setIsLoading }) => {
             </div>
           ) : (
             <div className="empty-state">
-              {!isLoading && tempPosts?.length === 0 ? "No Tasks!" : null}
+              {!isFetchingPosts && tempPosts?.length === 0
+                ? `No ${activeFilter === "all" ? "" : activeFilter} Tasks!`
+                : null}
             </div>
           )}
         </div>

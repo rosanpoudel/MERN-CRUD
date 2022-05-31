@@ -1,13 +1,17 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Navigate } from "react-router-dom";
-import { setCookie } from "../helpers/localStorage";
-import SitePaths from "../helpers/path";
+import LocalDB from "../helpers/localStorage";
 import Button from "./Button";
 import InputFeild from "./InputFeild";
+import { useDispatch } from "react-redux";
+import { setLoginStatus } from "../redux/actions/authActions";
+import { ApiBasePath } from "../helpers/globalConstants";
+import CustomizedSnackbars from "./Snackbar";
+import { setSnackbarOptions } from "../redux/actions/snackbarActions";
 
-const LoginForm = ({ setIsLoggedIn }) => {
+const LoginForm = () => {
+  const dispatch = useDispatch();
   const [loginFormData, setLoginFormData] = useState({
     email: "",
     password: "",
@@ -19,28 +23,47 @@ const LoginForm = ({ setIsLoggedIn }) => {
     setLoginFormData({ ...loginFormData, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setLoginLoading(true);
+
     axios
-      .post(`${SitePaths.BASE_PATH}/user/login`, loginFormData)
+      .post(`${ApiBasePath.BASE_PATH}/user/login`, loginFormData)
       .then(function (response) {
         // on login success
-        setCookie(response.data);
+        LocalDB.setSession(response.data);
+        dispatch(setLoginStatus(true));
         setLoginLoading(false);
         setLoginFormData({
           email: "",
           password: "",
         });
-        setIsLoggedIn(true);
       })
       .catch(function (error) {
         setLoginLoading(false);
-        console.log("error:", error);
+
+        // error snackbar
+        dispatch(
+          setSnackbarOptions({
+            isOpen: true,
+            type: "error",
+            message: "Please enter valid credentials",
+          })
+        );
+        setTimeout(() => {
+          dispatch(
+            setSnackbarOptions({
+              isOpen: false,
+              type: "",
+              message: "",
+            })
+          );
+        }, 3000);
       });
   };
 
   return (
     <div className="login-signup">
+      <CustomizedSnackbars type="success" message="Login successful !" />
       <div className="c-form">
         <InputFeild
           label="Enter your email"
@@ -57,10 +80,22 @@ const LoginForm = ({ setIsLoggedIn }) => {
           value={password}
         />
         <div>
-          <Button label="Login" loading={loginLoading} onClick={handleLogin} />
-          <Link className="link-button c-button" to="/signup">
-            Sign up
-          </Link>
+          <Button
+            label="Login"
+            disabled={
+              loginFormData.email.length === 0 ||
+              loginFormData.password.length === 0
+            }
+            loading={loginLoading}
+            onClick={handleLogin}
+          />
+          <div className="other-option">
+            Click{" "}
+            <Link className="link-button" to="/signup">
+              Sign up
+            </Link>{" "}
+            to create new account.
+          </div>
         </div>
       </div>
     </div>

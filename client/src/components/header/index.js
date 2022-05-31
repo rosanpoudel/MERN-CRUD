@@ -1,11 +1,16 @@
 import React from "react";
 import Button from "../Button";
-import { deleteCookie } from "../../helpers/localStorage";
+import { useDispatch } from "react-redux";
+import { setLoginStatus } from "../../redux/actions/authActions";
+import LocalDB from "../../helpers/localStorage";
 
-const Header = ({ isLoggedIn, setIsLoggedIn }) => {
+const Header = ({ isLoggedIn }) => {
+  const dispatch = useDispatch();
+
+  // handle logout
   const handleLogout = () => {
-    deleteCookie();
-    setIsLoggedIn(false);
+    LocalDB.deleteSession();
+    dispatch(setLoginStatus(false));
   };
   return (
     <div className="header">
